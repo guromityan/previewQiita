@@ -1,0 +1,8 @@
+.DS_Store
+app/md2html/__pycache__/
+app/.DS_Store
+app/html/
+app/md2html/tmp.html
+app/lambda_function/__pycache__/
+app/lambda_function/packages/
+
