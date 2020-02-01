@@ -11,9 +11,9 @@ MD_EXTENSION = 'gfm'
 CSS_FILE = 'github.css'
 
 def convert(original_md):
-    sanitized_md = sanitize(original_md)
+    sanitized_md, page_title = sanitize(original_md)
     html_body = md2html(sanitized_md)
-    html = merge_html_css(html_body)
+    html = merge_html_css(page_title, html_body)
 
     byte_html = html.encode('utf-8')
     return byte_html.decode('utf-8')
@@ -21,6 +21,7 @@ def convert(original_md):
 
 def sanitize(original_md):
     sanitized_md = []
+
     rows = original_md.split('\n')
     for i, row in enumerate(rows):
         if '```' not in row:
@@ -29,7 +30,9 @@ def sanitize(original_md):
 
         sanitized_md.extend(separate_option(row))
 
-    return '\n'.join(sanitized_md)
+    page_title = rows[1][7:]
+
+    return '\n'.join(sanitized_md), page_title
 
 
 def separate_option(row):
@@ -73,11 +76,12 @@ def get_css():
     return css.read()
 
 
-def merge_html_css(html_body):
+def merge_html_css(page_title, html_body):
     css = get_css()
     template = html_template.template
 
     html = template.format_map({
+        'page_title': page_title,
         'css': css,
         'html_body': html_body
     })
